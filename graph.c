@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "graph.h"
+
+#include "pile.c"
+#include "file.c"
 
 graph * creerGraph(int n){
   graph * g = malloc(sizeof(graph));
@@ -18,11 +22,52 @@ void ajouterArete(graph * g, int src, int dst, int poids){
   g->aretes[src] = a;
 }
 
+
+file * dfs(graph *g, int src){
+  int * visited = calloc(g->s,sizeof(int));
+  pile * to_visit = creerPile();
+  empile(to_visit,src);
+  file * f = creerFile();
+  while(!estVidePile(to_visit) && !visited[src = depile(to_visit)]){
+    arete * current = g->aretes[src];
+    while(current){
+      if(!visited[current->dst])
+        empile(to_visit,current->dst);
+      current = current->suivant;
+    }
+    visited[src] = true;
+    enfile(f, src);
+ }
+ free(visited);
+ return f;
+}
+
+file * bfs(graph *g, int src){
+  int * visited = calloc(g->s,sizeof(int));
+  file * to_visit = creerFile();
+  enfile(to_visit,src);
+  file * f = creerFile();
+  while(!estVideFile(to_visit) && !visited[src = defile(to_visit)]){
+    arete * current = g->aretes[src];
+    while(current){
+      if(!visited[current->dst])
+        enfile(to_visit,current->dst);
+      current = current->suivant;
+    }
+    visited[src] = true;
+    enfile(f, src);
+ }
+ free(visited);
+ return f;
+}
+
 int main(void){
   graph * exemple = creerGraph(11);
   int src[]= {0,1,1,2,2,2,3,3,4,4 ,5,6,6,7,7 ,8,9,9};
   int dst[] = {3,3,5,0,1,4,2,7,2,10,6,5,8,8,10,9,7,10};
   for(int i=0;i<18;i++)
       ajouterArete(exemple,src[i],dst[i],1);
+  printFile(dfs(exemple,0));
+  printFile(bfs(exemple,0));
   return 0;
 }

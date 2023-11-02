@@ -36,6 +36,35 @@ int filsDroit (int i) {
     return 2 * i + 2;
 }
 
+
+int indiceMinfils(tasMin * t, int pos){
+  return t->contenu[filsGauche(pos)].poids < t->contenu[filsDroit(pos)].poids ? 
+    filsGauche(pos) : filsDroit(pos);
+}
+
+arete * extraction(tasMin * tas){
+  if(!estVide(tas)){
+    echange(tas->contenu + tas->taille,tas->contenu);
+    int pos = 0;
+    int mini;
+    while(filsDroit(pos) < tas->taille && 
+    tas->contenu[(mini = indiceMinfils(tas,pos))].poids < tas->contenu[pos].poids){
+      echange(tas->contenu + mini,tas->contenu + pos);
+      pos = mini;
+    }
+  }
+  tas->taille--;
+  return tas->contenu + tas->taille + 1 ;
+}
+
+void printTas(tasMin * tas){
+  printf("Tas : ");
+  for(int i=0;i<tas->taille;i++){
+    printf("%d ",tas->contenu[i].poids);
+  }
+  printf("\n");
+}
+
 void insertion(tasMin * tas,arete *a){
   if(tas->taille == tas->capacite){
     printf("il n'y a plus de place ! :'(");
@@ -43,43 +72,31 @@ void insertion(tasMin * tas,arete *a){
   }
   int pos = tas->taille;
   tas->taille++;
-  memcpy(&(tas->contenu[pos]),a,sizeof(a));
-  while(pos > 0 && tas->contenu[parent(pos)]->poids > tas->contenu[pos]->poids){
-    echange(tas->contenu[parent(pos)],tas->contenu[pos]);
+  tas->contenu[pos].poids = a->poids;
+  tas->contenu[pos].src = a->src;
+  tas->contenu[pos].dst = a->dst;
+  tas->contenu[pos].poids = a->poids;
+  tas->contenu[pos].suivant = a->suivant;
+
+  while(pos > 0 && tas->contenu[parent(pos)].poids > tas->contenu[pos].poids){
+    echange(tas->contenu + parent(pos),tas->contenu + pos);
     pos = parent(pos);
   }
 }
 
-int indiceMinfils(tasMin * t, int pos){
-  return t->contenu[filsGauche(pos)]->poids < t->contenu[filsDroit(pos)]->poids ? 
-    filsGauche(pos) : filsDroit(pos);
-}
-
-arete * extraction(tasMin * tas){
-  if(!estVide(tas)){
-    echange(tas->contenu[tas->taille],tas->contenu[0]);
-    int pos = 0;
-    int mini;
-    while(tas->contenu[(mini = indiceMinfils(tas,pos))]->poids < tas->contenu[pos]->poids){
-      echange(tas->contenu[mini],tas->contenu[pos]);
-      pos = mini;
-    }
-  }
-  tas->taille--;
-  return tas->contenu[tas->taille+1];
-}
-
 int main(void){
-  tasMin * tas = creerTas(100);
+  tasMin * tas = creerTas(20);
   srand(time(NULL));
-  for(int i=0;i<100;i++){
+  for(int i=0;i<10;i++){
     arete a;
     a.poids = rand()%100;
     printf("Insertion %d\n",a.poids);
     insertion(tas,&a);
   }
-  for(int i=0;i<100;i++){
+  printTas(tas);
+  for(int i=0;i<10;i++){
     printf("Extraction %d\n",extraction(tas)->poids);
   }
+  return 0;
 }
 

@@ -8,14 +8,14 @@ file * creerFile(void){
   return f;
 }
 
-bool estVide(file * f){
+bool estVideFile(file * f){
   return !f->debut;
 }
 
 void enfile(file * f, int donnee){
   element * e = calloc(1, sizeof(element));
   e->donnee = donnee;
-  if(estVide(f)){
+  if(estVideFile(f)){
     f->debut = e;
     f->fin = e;
   }else{
@@ -32,7 +32,17 @@ int defile(file * f){
   return donnee;
 }
 
-int main(void){
+void printFile(file * f){
+  element * e = f->debut;
+  printf("File: ");
+  while(e){
+    printf("%d ", e->donnee);
+    e = e->suivant;
+  }
+  printf("\n");
+}
+
+int File(void){
   file * exemple = creerFile();
   for(int i = 0; i < 10; i++){
     int donnee = rand() % 100;

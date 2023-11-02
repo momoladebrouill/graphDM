@@ -1,7 +1,7 @@
 #include "graph.h"
 
 typedef struct {
-  arete ** contenu;
+  arete * contenu;
   int taille;
   int capacite;
 } tasMin;

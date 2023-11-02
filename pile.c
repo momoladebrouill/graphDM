@@ -27,7 +27,7 @@ int depile(pile *p){
     return donnee;
 }
 
-int main(void){
+int Pile(void){
   pile * exemple = creerPile();
   for(int i=0;i<10;i++){
     int donnee = rand()%100;
@@ -37,5 +37,6 @@ int main(void){
   for(int i=0;i<10;i++){
     printf("Depile %d\n",depile(exemple));
   }
+  return 0;
 }
   

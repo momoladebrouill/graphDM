@@ -11,7 +11,7 @@ file:
 	gcc file.c -o file.out
 	./file.out
 tasMin:
-	gcc tasMin.c -o tasMin.out -fsanitize=address
+	gcc tasMin.c -o tasMin.out  
 	./tasMin.out
 clean:
 	rm -rf *.out
