@@ -9,3 +9,10 @@ typedef struct {
     int s;
     arete **aretes;
 } graph;
+
+typedef struct {
+    int dist;
+    int preced;
+} sommet;
+
+

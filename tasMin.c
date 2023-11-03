@@ -13,7 +13,7 @@ tasMin * creerTas(int tailleMax){
   return tas;
 }
 
-bool estVide(tasMin * tas){
+bool estVideTas(tasMin * tas){
   return !tas->taille;
 }
 
