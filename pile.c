@@ -28,11 +28,12 @@ int depile(pile *p){
 }
 int printPile(pile *p){
   element *e = p->sommet;
-  printf("Pile : \n");
+  printf("Pile : ");
   while(e){
-    printf("%d\n",e->donnee);
+    printf("%d ",e->donnee);
     e = e->suivant;
   }
+  printf("\n");
   return 0;
 }
 

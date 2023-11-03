@@ -134,34 +134,42 @@ pile * djikstra(graph *g, int src, int dst){
   a.preced = -1;
   for(int i=0;i<g->s;i++){
     a.id = i;
-    if(i==src)
-      a.dist = 0;
     insertion(tas,&a);
-    if(i==src)
-      a.dist = INT_MAX;
   }
+  changerPoids(tas,src,0);
   int current = src;
+  printTas(tas);
   while(current != dst){
-    while(parcouru[current])
-      current = extraction(tas)->id;
-    arete * next = g->aretes[current];
-    while(next){
+    printf("current : %d\n",current);
+    arete * arr = g->aretes[current];
+    while(arr){
       bool chang;
-      changerPoids(tas,next->dst,min(getPoids(tas,next->dst),next->poids+getPoids(tas,next->src),&chang));
-      if(chang)
-        changerPreced(tas,next->dst,next->src);
-      next = next->suivant;
+      changerPoids(tas,arr->dst,
+      min(getPoids(tas,arr->dst),arr->poids + getPoids(tas,arr->src),&chang));
+      changerPreced(tas,arr->dst,arr->src);
+      arr = arr->suivant;
     }
     parcouru[current] = true;
+    while(parcouru[current]) current = extraction(tas)->id;
   }
-  current = dst;
   int prec;
+  for(int i=0;i<g->s;i++)
+    printf("%d:%d\n",i,getPreced(tas,i));
   pile * p = creerPile();
+  current = dst;
+  if(getPreced(tas,current) == -1){
+    freeTas(tas);
+    free(parcouru);
+    printf("Pas de chemin :'(\n");
+    return p;
+  }
   while(current!=src){
     prec = getPreced(tas,current);
     empile(p,prec);
     current = prec;
   }
+  freeTas(tas);
+  free(parcouru);
   return p;
 }
 

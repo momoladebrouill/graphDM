@@ -18,16 +18,18 @@ bool estVideTas(tasMin * tas){
 }
 
 void ech(sommet * a, sommet *b){
-  sommet temp = *a;
-  *a = *b;
-  *b = temp;
+  sommet * temp = malloc(sizeof(sommet));
+  memcpy(temp,a,sizeof(sommet));
+  memcpy(a,b,sizeof(sommet));
+  memcpy(b,temp,sizeof(sommet));
+  free(temp);
 }
 
 // fonction qui echange deux sommets dans le tas
 void echange(tasMin * t, int posa, int  posb) {
     ech(t->contenu + posa,t->contenu + posb);
-    //t->positions[t->contenu[posb].id] = posb;
-    //t->positions[t->contenu[posa].id] = posa;
+    t->positions[t->contenu[posb].id] = posb;
+    t->positions[t->contenu[posa].id] = posa;
 }
 
 // l'arbre est un tas min, donc complet à gauche, on peut donc utiliser un tableau pour
@@ -65,7 +67,7 @@ sommet * extraction(tasMin * tas){
 void printTas(tasMin * tas){
   printf("Tas : ");
   for(int i=0;i<tas->taille;i++){
-    printf("%d ",tas->contenu[i].dist);
+    printf("%d ",tas->contenu[i].id);
   }
   printf("\n");
 }
@@ -84,6 +86,7 @@ void insertion(tasMin * tas,sommet *a){
   }
   int pos = tas->taille;
   tas->taille++;
+  tas->contenu[pos].id = a->id;
   tas->contenu[pos].dist = a->dist;
   tas->contenu[pos].preced = a->preced;
   tas->positions[a->id] = pos;
@@ -122,6 +125,7 @@ int TasMin(void){
     a.id = i;
     a.dist = rand()%100;
     a.preced = -1;
+    printf("%d ",a.id);
     printf("Insertion %d\n",a.dist);
     insertion(tas,&a);
   }
@@ -133,4 +137,6 @@ int TasMin(void){
   freeTas(tas);
   return 0;
 }
-
+/*int main(void){
+  return TasMin();
+}*/
