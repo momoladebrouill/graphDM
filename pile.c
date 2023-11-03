@@ -26,6 +26,22 @@ int depile(pile *p){
     free(e);
     return donnee;
 }
+int printPile(pile *p){
+  element *e = p->sommet;
+  printf("Pile : \n");
+  while(e){
+    printf("%d\n",e->donnee);
+    e = e->suivant;
+  }
+  return 0;
+}
+
+void freePile(pile * p){
+  while(!estVidePile(p)){
+    depile(p);
+  }
+  free(p);
+}
 
 int Pile(void){
   pile * exemple = creerPile();

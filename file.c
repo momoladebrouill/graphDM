@@ -8,6 +8,7 @@ file * creerFile(void){
   return f;
 }
 
+
 bool estVideFile(file * f){
   return !f->debut;
 }
@@ -40,6 +41,13 @@ void printFile(file * f){
     e = e->suivant;
   }
   printf("\n");
+}
+
+void freeFile(file * f){
+    while(!estVideFile(f)){
+      defile(f);
+    }
+    free(f);
 }
 
 int File(void){

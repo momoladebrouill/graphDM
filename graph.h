@@ -11,6 +11,7 @@ typedef struct {
 } graph;
 
 typedef struct {
+    int id;
     int dist;
     int preced;
 } sommet;

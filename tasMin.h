@@ -1,7 +1,6 @@
-#include "graph.h"
-
 typedef struct {
-  arete * contenu;
+  sommet * contenu;
   int taille;
+  int * positions; // position[indice du sommet] = position dans l'arbre
   int capacite;
 } tasMin;
