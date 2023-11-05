@@ -121,53 +121,70 @@ int * kosaraju(graph *g){
   return comp;
 }
 
-int min(int a, int b, bool * chg){
-  *chg = a < b;
-  return &chg ? a : b;
+int min(int a, int b, bool * droite){
+  // il y a un swap lorsque b < a
+  *droite = b < a ;
+  return &droite ? b : a;
 }
 
 pile * djikstra(graph *g, int src, int dst){
   tasMin * tas = creerTas(g->s);
   bool * parcouru = calloc(g->s, sizeof(bool));
+  
+  // initialisation du tas, on met la distance à INT_MAX pour tous les sommets et comme précédent -1
   sommet a;
-  a.dist = INT_MAX;
+  a.dist = 40;
   a.preced = -1;
-  for(int i=0;i<g->s;i++){
+  for(int i = 0;i<g->s;i++){
     a.id = i;
     insertion(tas,&a);
   }
+
+  // on met la distance à 0 pour le sommet de départ
   changerPoids(tas,src,0);
-  int current = src;
   printTas(tas);
-  while(current != dst){
-    printf("current : %d\n",current);
-    arete * arr = g->aretes[current];
+  
+  // on marque chaque sommet avec sa distance minimale avec la source
+  int position = src;
+  while(!estVideTas(tas) && position != dst){
+    sommet * sautVers;
+    while(!estVideTas(tas)){
+      sautVers = extraction(tas);
+      if(parcouru[sautVers->id]){ // si on l'a déjà parcouru, on le réinsère.
+        insertion(tas,sautVers);
+      }else
+        break;
+    }
+    position = sautVers->id;
+    arete * arr = g->aretes[position];
     while(arr){
-      bool chang;
-      changerPoids(tas,arr->dst,
-      min(getPoids(tas,arr->dst),arr->poids + getPoids(tas,arr->src),&chang));
-      changerPreced(tas,arr->dst,arr->src);
+      int nouveauPoids = arr->poids + getPoids(tas,position);
+      if(getPoids(tas,arr->dst) > nouveauPoids){
+        changerPoids(tas,arr->dst,nouveauPoids);
+        changerPreced(tas,arr->dst,arr->src);
+      }
       arr = arr->suivant;
     }
-    parcouru[current] = true;
-    while(parcouru[current]) current = extraction(tas)->id;
+    parcouru[position] = true;
+    printTas(tas);
   }
-  int prec;
+  printf("fin du parcours\n");
+  // on remonte depuis la destination à la source
   for(int i=0;i<g->s;i++)
     printf("%d:%d\n",i,getPreced(tas,i));
   pile * p = creerPile();
-  current = dst;
-  if(getPreced(tas,current) == -1){
+  if(getPreced(tas,dst) == -1){
     freeTas(tas);
     free(parcouru);
     printf("Pas de chemin :'(\n");
     return p;
   }
-  while(current!=src){
-    prec = getPreced(tas,current);
-    empile(p,prec);
-    current = prec;
+  position = dst;
+  while(position!=src){
+    empile(p,position);
+    position = getPreced(tas,position);
   }
+  empile(p,src);
   freeTas(tas);
   free(parcouru);
   return p;

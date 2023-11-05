@@ -67,7 +67,7 @@ sommet * extraction(tasMin * tas){
 void printTas(tasMin * tas){
   printf("Tas : ");
   for(int i=0;i<tas->taille;i++){
-    printf("%d ",tas->contenu[i].id);
+    printf("\033[0;31m%d\033[0m(%d) ",tas->contenu[i].id, tas->contenu[i].dist);
   }
   printf("\n");
 }
