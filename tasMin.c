@@ -2,8 +2,17 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#include <time.h>
+
 #include "tasMin.h"
+
+void printTas(tasMin * tas){
+  printf("Tas : ");
+  for(int i=0;i<tas->taille;i++){
+    printf("\033[0;31m%d\033[0m(%d) ",tas->contenu[i].id, tas->contenu[i].dist);
+  }
+  printf("\n");
+}
+
 tasMin * creerTas(int tailleMax){
   tasMin * tas = malloc(sizeof(tasMin));
   tas->contenu = malloc(tailleMax * sizeof(sommet));
@@ -17,12 +26,11 @@ bool estVideTas(tasMin * tas){
   return !tas->taille;
 }
 
-void ech(sommet * a, sommet *b){
-  sommet * temp = malloc(sizeof(sommet));
-  memcpy(temp,a,sizeof(sommet));
-  memcpy(a,b,sizeof(sommet));
-  memcpy(b,temp,sizeof(sommet));
-  free(temp);
+// echange deux sommets
+void ech(sommet *a, sommet *b){
+  sommet temp = *a;
+  *a = *b;
+  *b = temp;
 }
 
 // fonction qui echange deux sommets dans le tas
@@ -50,28 +58,23 @@ int indiceMinfils(tasMin * t, int pos){
 }
 
 sommet * extraction(tasMin * tas){
-  if(!estVideTas(tas)){
-    echange(tas,tas->taille-1,0);
-    int pos = 0;
-    int mini = 0;
-    while(filsDroit(pos) < tas->taille && 
-    tas->contenu[(mini = indiceMinfils(tas,pos))].dist < tas->contenu[pos].dist){
-      echange(tas,mini,pos);
-      pos = mini;
-    }
+  if(estVideTas(tas)){
+    printf("Le tas est vide ! >:(\n");
+    return NULL;
+  }
+  echange(tas,tas->taille-1,0);
+  int pos = 0;
+  int mini = 0;
+  while(filsDroit(pos) < tas->taille && 
+  tas->contenu[(mini = indiceMinfils(tas,pos))].dist < tas->contenu[pos].dist){
+    echange(tas,mini,pos);
+    pos = mini;
   }
   tas->taille--;
   return tas->contenu + tas->taille;
 }
 
-void printTas(tasMin * tas){
-  printf("Tas : ");
-  for(int i=0;i<tas->taille;i++){
-    printf("\033[0;31m%d\033[0m(%d) ",tas->contenu[i].id, tas->contenu[i].dist);
-  }
-  printf("\n");
-}
-
+// fait remonter le sommet à la bonne place
 void pushUp(tasMin * tas, int pos){
   while(pos > 0 && tas->contenu[parent(pos)].dist > tas->contenu[pos].dist){
     echange(tas,parent(pos),pos);
@@ -94,8 +97,8 @@ void insertion(tasMin * tas,sommet *a){
 }
 
 void changerPoids(tasMin * tas,int som, int poids){
-  // on suppose que le nouveau poids fait forcément remonter dans l'arbre
   tas->contenu[tas->positions[som]].dist = poids;
+  // on suppose que le nouveau poids fait forcément remonter dans l'arbre
   pushUp(tas,tas->positions[som]);
 }
 
@@ -118,25 +121,20 @@ void freeTas(tasMin * tas){
 }
 
 int TasMin(void){
+  printf("\033[1;34mTas Min\033[0m\n");
   tasMin * tas = creerTas(20);
-  srand(time(NULL));
-  for(int i=0;i<15;i++){
+  for(int i=0;i<10;i++){
     sommet a;
     a.id = i;
     a.dist = rand()%100;
     a.preced = -1;
-    printf("%d ",a.id);
-    printf("Insertion %d\n",a.dist);
+    printf("Insertion %d\n",a.id);
     insertion(tas,&a);
   }
   printTas(tas);
-  for(int i=0;i<15;i++){
-    int v = extraction(tas)->dist;
-    printf("Extraction %d\n",v);
+  for(int i=0;i<10;i++){
+    printf("Extraction %d\n",extraction(tas)->id);
   }
   freeTas(tas);
   return 0;
 }
-/*int main(void){
-  return TasMin();
-}*/

@@ -8,7 +8,6 @@ file * creerFile(void){
   return f;
 }
 
-
 bool estVideFile(file * f){
   return !f->debut;
 }
@@ -51,14 +50,17 @@ void freeFile(file * f){
 }
 
 int File(void){
+  printf("\033[1;34mFile\033[0m\n");
   file * exemple = creerFile();
   for(int i = 0; i < 10; i++){
     int donnee = rand() % 100;
     enfile(exemple, donnee);
     printf("Enfile %d\n", donnee);
   }
+  printFile(exemple);
   for(int i = 0; i < 10; i++){
     printf("Defile %d\n", defile(exemple));
   }
+  freeFile(exemple);
   return 0;
 }

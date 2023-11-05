@@ -103,7 +103,7 @@ int * kosaraju(graph *g){
   free(visite);
   graph * rg = grapheMirroir(g);
   bool * rvisite = calloc(rg->s,sizeof(bool));
-  int ncomp = 0;
+  int ncomp = 0; // numéro de la CFC
   int * comp = calloc(g->s,sizeof(int));
   while(!estVidePile(ordre)){
     int ia = depile(ordre);
@@ -121,19 +121,11 @@ int * kosaraju(graph *g){
   return comp;
 }
 
-int min(int a, int b, bool * droite){
-  // il y a un swap lorsque b < a
-  *droite = b < a ;
-  return &droite ? b : a;
-}
-
 pile * djikstra(graph *g, int src, int dst){
-  tasMin * tas = creerTas(g->s);
-  bool * parcouru = calloc(g->s, sizeof(bool));
-  
   // initialisation du tas, on met la distance à INT_MAX pour tous les sommets et comme précédent -1
+  tasMin * tas = creerTas(g->s);
   sommet a;
-  a.dist = 40;
+  a.dist = INT_MAX-1; // pour éviter de cycler quand on fait +1 lors de la comparaison
   a.preced = -1;
   for(int i = 0;i<g->s;i++){
     a.id = i;
@@ -142,11 +134,12 @@ pile * djikstra(graph *g, int src, int dst){
 
   // on met la distance à 0 pour le sommet de départ
   changerPoids(tas,src,0);
-  printTas(tas);
   
   // on marque chaque sommet avec sa distance minimale avec la source
   int position = src;
+  bool * parcouru = calloc(g->s, sizeof(bool));
   while(!estVideTas(tas) && position != dst){
+    // on prend le sommet avec la plus petite distance non déjà parcouru
     sommet * sautVers;
     while(!estVideTas(tas)){
       sautVers = extraction(tas);
@@ -155,6 +148,7 @@ pile * djikstra(graph *g, int src, int dst){
       }else
         break;
     }
+
     position = sautVers->id;
     arete * arr = g->aretes[position];
     while(arr){
@@ -166,12 +160,9 @@ pile * djikstra(graph *g, int src, int dst){
       arr = arr->suivant;
     }
     parcouru[position] = true;
-    printTas(tas);
   }
-  printf("fin du parcours\n");
+
   // on remonte depuis la destination à la source
-  for(int i=0;i<g->s;i++)
-    printf("%d:%d\n",i,getPreced(tas,i));
   pile * p = creerPile();
   if(getPreced(tas,dst) == -1){
     freeTas(tas);
@@ -179,11 +170,13 @@ pile * djikstra(graph *g, int src, int dst){
     printf("Pas de chemin :'(\n");
     return p;
   }
+
   position = dst;
   while(position!=src){
     empile(p,position);
     position = getPreced(tas,position);
   }
+
   empile(p,src);
   freeTas(tas);
   free(parcouru);
@@ -191,7 +184,8 @@ pile * djikstra(graph *g, int src, int dst){
 }
 
 
-int main(void){
+int Graph(void){
+  printf("\033[1;34mGraphe\033[0m\n");
   graph * exemple = creerGraph(11);
 
   // matrice d'arete pour simplifier l'ajout dans le graphe
@@ -201,24 +195,28 @@ int main(void){
   
   bool * visited = calloc(exemple->s,sizeof(int));
   
+  printf("\033[1;35mDFS\033[0m\n");
   file * d = dfs(exemple,0,visited);
   printFile(d);
   freeFile(d);
   free(visited);
 
+  printf("\033[1;35mBFS\033[0m\n");
   file * f = bfs(exemple,0);
   printFile(f);
   freeFile(f);
 
+  printf("\033[1;35mDjikstra\033[0m\n");
   pile * p = djikstra(exemple,0,10);
   printPile(p); 
   freePile(p);
   
+  printf("\033[1;35mKosaraju\033[0m\n");
   int * comp = kosaraju(exemple);
-  printf("Kosaraju : ");
   for(int i=0;i<exemple->s;i++)
-    printf("%d:%d%c",i,comp[i],i==exemple->s-1 ? '\n' : ',' );
+    printf("\033[0;3%dm%d\033[0m%c",comp[i],i,i==exemple->s-1 ? '\n' : ',' );
   free(comp);
+
   freeGraph(exemple);
   return 0;
 }
