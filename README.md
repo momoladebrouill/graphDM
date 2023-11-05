@@ -1,8 +1,9 @@
 # DM sur les graphes
 ## Pile et File
-Structure de Pile et de File d'entiers Classique
+Structure de Pile et de File d'entiers classique
 ## TasMin
-Strucutre de Tas Minimal de sommets de graphe
+Strucutre de Tas Minimal de sommets d'un graphe
 ## Graph
-Algorithmes de BFS, DFS, Djikstra et Kozaraju
+Algorithmes de BFS, DFS, Djikstra et Kozaraju, mis en exemples sur le graphe :
 
+![imaj](./graph.png)
