@@ -183,6 +183,37 @@ pile * djikstra(graph *g, int src, int dst){
   return p;
 }
 
+void printGraph(graph * g){
+  printf("\033[1;34mGraphe\033[0m\n");
+  for(int i=0;i<g->s;i++){
+    printf("\033[0;3%dm%d\033[0m : ",i,i);
+    arete * current = g->aretes[i];
+    while(current){
+      printf("\033[0;3%dm%d\033[0m(%d) ",current->dst,current->dst,current->poids);
+      current = current->suivant;
+    }
+    printf("\n");
+  }
+}
+
+bool estConnexe(graph * g){
+  bool * visited = calloc(g->s,sizeof(bool));
+  file * f = bfs(g,0);
+  while(!estVideFile(f)){
+    visited[defile(f)] = true;
+  }
+  freeFile(f);
+  for(int i=0;i<g->s;i++)
+    if(!visited[i]){
+      free(visited);
+      return false;
+    }
+  free(visited);
+  return true;
+}
+
+  
+
 
 int Graph(void){
   printf("\033[1;34mGraphe\033[0m\n");
@@ -216,6 +247,9 @@ int Graph(void){
   for(int i=0;i<exemple->s;i++)
     printf("\033[0;3%dm%d\033[0m%c",comp[i],i,i==exemple->s-1 ? '\n' : ',' );
   free(comp);
+
+  printf("\033[1;35mGraphe\033[0m\n");
+  printGraph(exemple);
 
   freeGraph(exemple);
   return 0;
